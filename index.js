@@ -86,6 +86,7 @@ export default async ({ req, res, log, error }) => {
       totals: total
     });
 
+    console.log("This works:", plan)
   } catch (err) {
     console.error(err);
     return res.json({ // ✅ return here too
