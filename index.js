@@ -52,7 +52,7 @@ export default async ({ req, res, log, error }) => {
     log("✅ Total foods fetched:", foods.length);
 
     foods = foods.filter(food =>
-      ['calories', 'protein', 'carbs', 'fat'].every(key =>
+      ['calories', 'protein', 'carbohydrates', 'fat'].every(key =>
         typeof food[key] === 'number' && !isNaN(food[key])
       )
     );
