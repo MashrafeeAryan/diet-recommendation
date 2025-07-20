@@ -1,6 +1,5 @@
-import { Client, Databases } from "node-appwrite";
+import { Client, Databases, Query } from "node-appwrite";
 
-// Main Appwrite function handler
 export default async ({ req, res, log, error }) => {
   const client = new Client()
     .setEndpoint(process.env.APPWRITE_ENDPOINT)
@@ -19,19 +18,38 @@ export default async ({ req, res, log, error }) => {
     typeof target.carbs !== 'number' ||
     typeof target.fat !== 'number'
   ) {
-    return res.json({ error: "Invalid or missing nutrition target" }); // ✅ return added
+    return res.json({ error: "Invalid or missing nutrition target" });
   }
 
+  // 🌀 Function to fetch all documents with pagination
+  const fetchAllDocuments = async () => {
+    let allDocs = [];
+    const limit = 100;
+    let offset = 0;
+
+    while (true) {
+      const response = await databases.listDocuments(
+        process.env.DatabaseID,
+        process.env.foodDatasetID,
+        [Query.limit(limit), Query.offset(offset)]
+      );
+
+      const docs = response.documents;
+      if (docs.length === 0) break;
+
+      allDocs.push(...docs);
+      offset += limit;
+
+      log(`Fetched ${allDocs.length} so far...`);
+    }
+
+    return allDocs;
+  };
+
   try {
-    const response = await databases.listDocuments(
-      process.env.DatabaseID,
-      process.env.foodDatasetID,
-      []
-    );
+    let foods = await fetchAllDocuments();
 
-    log("Total foods fetched:", response.documents.length);
-
-    let foods = response.documents;
+    log("✅ Total foods fetched:", foods.length);
 
     foods = foods.filter(food =>
       ['calories', 'protein', 'carbs', 'fat'].every(key =>
@@ -39,24 +57,21 @@ export default async ({ req, res, log, error }) => {
       )
     );
 
-    log("Food's length after checking if calories, protein, carbs are numbers:", foods.length)
+    log("✅ Foods with valid nutrition values:", foods.length);
 
     if (preferences.length > 0) {
       foods = foods.filter(food =>
         preferences.every(tag => food.tags?.includes(tag))
       );
+      log("✅ After preferences filter:", foods.length);
     }
-
-    log("Food's length after preferecnes filter:", foods.length)
-
 
     if (allergies.length > 0) {
       foods = foods.filter(food =>
         !food.ingredients?.some(ing => allergies.includes(ing))
       );
+      log("✅ After allergies filter:", foods.length);
     }
-
-    log("Food's length after allerrgies filter:", foods.length)
 
     foods.sort((a, b) => {
       const aDensity = (a.protein || 0) / (a.calories || 1);
@@ -89,8 +104,8 @@ export default async ({ req, res, log, error }) => {
       if (total.calories >= target.calories * 0.95) break;
     }
 
-    log("This works:", plan)
-    // ✅ return the response
+    log("✅ Final plan size:", plan.length);
+
     return res.json({
       plan,
       totals: total
@@ -98,7 +113,7 @@ export default async ({ req, res, log, error }) => {
 
   } catch (err) {
     console.error(err);
-    return res.json({ // ✅ return here too
+    return res.json({
       error: "Something went wrong",
       details: process.env.NODE_ENV === "development" ? err.message : undefined
     });
