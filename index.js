@@ -29,8 +29,8 @@ export default async function ({ req, res, log, error }) {
   try {
     // Step 4: Get all food items
     const response = await databases.listDocuments(
-      process.env.DB_ID,
-      process.env.COLLECTION_ID,
+      process.env.DatabaseID,
+      process.env.foodDatasetID,
       []
     );
 
