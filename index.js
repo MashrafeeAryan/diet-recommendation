@@ -80,13 +80,13 @@ export default async ({ req, res, log, error }) => {
       if (total.calories >= target.calories * 0.95) break;
     }
 
+    log("This works:", plan)
     // ✅ return the response
     return res.json({
       plan,
       totals: total
     });
 
-    console.log("This works:", plan)
   } catch (err) {
     console.error(err);
     return res.json({ // ✅ return here too
