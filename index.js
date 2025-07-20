@@ -29,6 +29,8 @@ export default async ({ req, res, log, error }) => {
       []
     );
 
+    log("Total foods fetched:", response.documents.length);
+
     let foods = response.documents;
 
     foods = foods.filter(food =>
@@ -37,17 +39,24 @@ export default async ({ req, res, log, error }) => {
       )
     );
 
+    log("Food's length after checking if calories, protein, carbs are numbers:", foods.length)
+
     if (preferences.length > 0) {
       foods = foods.filter(food =>
         preferences.every(tag => food.tags?.includes(tag))
       );
     }
 
+    log("Food's length after preferecnes filter:", foods.length)
+
+
     if (allergies.length > 0) {
       foods = foods.filter(food =>
         !food.ingredients?.some(ing => allergies.includes(ing))
       );
     }
+
+    log("Food's length after allerrgies filter:", foods.length)
 
     foods.sort((a, b) => {
       const aDensity = (a.protein || 0) / (a.calories || 1);
