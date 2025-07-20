@@ -51,6 +51,7 @@ export default async ({ req, res, log, error }) => {
 
     log("✅ Total foods fetched:", foods.length);
 
+    log("One food:", foods[0])
     foods = foods.filter(food =>
       ['calories', 'protein', 'carbohydrates', 'fat'].every(key =>
         typeof food[key] === 'number' && !isNaN(food[key])
