@@ -158,8 +158,8 @@ export default async ({ req, res, log, error }) => {
     };
 
     // 🍳 Generate meal plans
-    const breakfastResult = buildMealPlan(foods, "breakfast", mealTargets.breakfast);
-    const lunchResult = buildMealPlan(foods, "lunch", mealTargets.lunch);
+    const breakfastResult = buildMealPlan(foods, "Breakfast", mealTargets.breakfast);
+    const lunchResult = buildMealPlan(foods, "Lunch", mealTargets.lunch);
 
     log("Breakfast Result", breakfastResult.length)
     log("Lunch Result", lunchResult.length)
