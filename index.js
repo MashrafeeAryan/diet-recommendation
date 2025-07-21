@@ -154,6 +154,7 @@ export default async ({ req, res, log, error }) => {
       }
 
       log(`✅ Final ${foodType} plan size:`, plan.length);
+      log(`${foodType}, Totals: ${total}`)
       return { plan, totals: total };
     };
 
@@ -161,8 +162,8 @@ export default async ({ req, res, log, error }) => {
     const breakfastResult = buildMealPlan(foods, "Breakfast", mealTargets.breakfast);
     const lunchResult = buildMealPlan(foods, "Lunch", mealTargets.lunch);
 
-    log("Breakfast Result", breakfastResult.length)
-    log("Lunch Result", lunchResult.length)
+    log("Breakfast Result", breakfastResult)
+    log("Lunch Result", lunchResult)
     // ✅ Return both meal plans
     return res.json({
       breakfast: breakfastResult.plan,
