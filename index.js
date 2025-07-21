@@ -124,9 +124,9 @@ export default async ({ req, res, log, error }) => {
     log("✅ Meal targets calculated:", mealTargets);
 
     // ⚙️ Function to build a meal plan for a specific meal type
-    const buildMealPlan = (foods, mealType, target) => {
-      const filtered = foods.filter(f => f.mealType === mealType);
-      log(`🍽️ ${mealType} foods available:`, filtered.length);
+    const buildMealPlan = (foods, foodType, target) => {
+      const filtered = foods.filter(f => f.foodType === foodType);
+      log(`🍽️ ${foodType} foods available:`, filtered.length);
 
       const plan = [];
       const total = { calories: 0, protein: 0, carbs: 0, fat: 0 };
@@ -153,7 +153,7 @@ export default async ({ req, res, log, error }) => {
         if (total.calories >= target.calories * 0.95) break;
       }
 
-      log(`✅ Final ${mealType} plan size:`, plan.length);
+      log(`✅ Final ${foodType} plan size:`, plan.length);
       return { plan, totals: total };
     };
 
