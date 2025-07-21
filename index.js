@@ -38,7 +38,7 @@ export default async ({ req, res, log, error }) => {
         process.env.foodDatasetID,
         [Query.limit(limit), 
         Query.offset(offset),
-        Query.equal("date", )
+        Query.equal("date", formattedDate)
     ]
       );
 
